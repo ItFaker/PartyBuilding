@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.qiantang.partybuilding.module.study.viewmodel.StudyViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="42px"
+            app:placeholderImage="@mipmap/study_top_bg"
+            app:placeholderImageScaleType="fitXY"
+            app:viewAspectRatio="1.84" />
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sdv"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_study_msg"
+            android:gravity="center_vertical"
+            android:onClick="@{viewModel.onClick}"
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.userMap.unreadMessage &gt; 0?View.VISIBLE:View.GONE}">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdv_msg"
+                android:layout_width="48px"
+                android:layout_height="48px"
+                android:layout_marginBottom="6px"
+                android:layout_marginLeft="8px"
+                android:layout_marginTop="6px"
+                app:placeholderImageScaleType="centerCrop"
+                app:placeholderImage="@mipmap/icon_reigster_top"
+                app:roundAsCircle="true"
+                bind:msgAvatar="@{viewModel.userMap.background}" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/white24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20px"
+                android:text="@{viewModel.userMap.unreadMessage+`条新消息`}" />
+
+            <ImageView
+                android:layout_width="12px"
+                android:layout_height="20.5px"
+                android:layout_marginLeft="26px"
+                android:layout_marginRight="24px"
+                android:background="@mipmap/icon_step_arrow" />
+        </LinearLayout>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_avatar"
+            android:layout_width="136px"
+            android:layout_height="136px"
+            android:layout_alignBottom="@+id/sdv"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="-80px"
+            android:layout_marginRight="17px"
+            android:onClick="@{viewModel.onClick}"
+            app:placeholderImageScaleType="centerCrop"
+            app:placeholderImage="@mipmap/icon_reigster_top"
+            app:roundAsCircle="true"
+            app:roundingBorderColor="@color/white"
+            app:roundingBorderWidth="4px"
+            bind:avatar="@{viewModel.userMap.avatar}" />
+
+        <TextView
+            style="@style/white32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/sdv_avatar"
+            android:layout_marginBottom="56px"
+            android:layout_marginRight="42px"
+            android:layout_toLeftOf="@+id/sdv_avatar"
+            android:text="@{viewModel.userMap.userName}" />
+
+    </RelativeLayout>
+</layout>

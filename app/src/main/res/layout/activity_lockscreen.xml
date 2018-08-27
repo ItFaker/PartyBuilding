@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:bind="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <ImageView
+        android:src="@mipmap/splash"
+        android:scaleType="centerCrop"
+        android:id="@+id/lock_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="#70000000" />-->
+    <com.qiantang.partybuilding.widget.SildingFinishLayout
+        android:id="@+id/slf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:layout_below="@id/ll_content"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"/>
+        <TextView
+            android:id="@+id/tv_voice_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sdv"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            />
+
+
+        <ImageView
+            android:src="@drawable/lock_btn_pause"
+            android:id="@+id/lock_music_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:layout_centerHorizontal="true"/>
+        <com.qiantang.partybuilding.widget.CustomTextView
+            android:layout_centerHorizontal="true"
+            android:text=">>> 滑动解锁"
+            android:textColor="#fafafa"
+            android:textSize="20sp"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/lock_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+    </com.qiantang.partybuilding.widget.SildingFinishLayout>
+
+</FrameLayout>

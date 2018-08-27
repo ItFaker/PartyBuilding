@@ -1,0 +1,329 @@
+package com.qiantang.partybuilding.module.web.viewmodel;
+
+import android.databinding.ObservableBoolean;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.qiantang.partybuilding.BaseBindActivity;
+import com.qiantang.partybuilding.MyApplication;
+import com.qiantang.partybuilding.R;
+import com.qiantang.partybuilding.adapter.CommentAdapter;
+import com.qiantang.partybuilding.base.ViewModel;
+import com.qiantang.partybuilding.config.CacheKey;
+import com.qiantang.partybuilding.config.Config;
+import com.qiantang.partybuilding.modle.HttpResult;
+import com.qiantang.partybuilding.modle.RxActivityDetial;
+import com.qiantang.partybuilding.modle.RxAddScore;
+import com.qiantang.partybuilding.modle.RxComment;
+import com.qiantang.partybuilding.modle.RxSpecialDetial;
+import com.qiantang.partybuilding.modle.ShareInfo;
+import com.qiantang.partybuilding.module.index.view.VoiceSpeechDetialActivity;
+import com.qiantang.partybuilding.module.web.view.HeadWebActivity;
+import com.qiantang.partybuilding.network.NetworkSubscriber;
+import com.qiantang.partybuilding.network.retrofit.ApiWrapper;
+import com.qiantang.partybuilding.network.retrofit.RetrofitUtil;
+import com.qiantang.partybuilding.utils.AppUtil;
+import com.qiantang.partybuilding.utils.ToastUtil;
+import com.qiantang.partybuilding.widget.dialog.ShareBottomDialog;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
+import retrofit2.http.POST;
+
+/**
+ * Created by zhaoyong bai on 2018/6/11.
+ */
+public class WebHeadViewModel implements ViewModel {
+    private BaseBindActivity activity;
+    private CommentAdapter commentAdapter;
+    private int pageNo = 1;
+    private String id;
+    private int commentPos = 0;
+    private int commentCount = 0;
+    private boolean isDealing = false;
+    private int addCommentCount = 0;
+    private int type = 0;
+    private long startTime;
+    public ObservableBoolean isFinish = new ObservableBoolean(false); //判断是否H5加载完毕,完毕之后在展示评论内容
+    private String title = "";
+    private String content = "";
+    private String url = "";
+    private ShareBottomDialog shareDialog;
+    private String imgUrl = "";
+
+    public WebHeadViewModel(BaseBindActivity activity, CommentAdapter commentAdapter) {
+        this.activity = activity;
+        this.commentAdapter = commentAdapter;
+        initData();
+    }
+
+    private void initData() {
+        startTime = System.currentTimeMillis();
+        id = activity.getIntent().getStringExtra("id");
+        type = activity.getIntent().getIntExtra("type", 0);
+        url = activity.getIntent().getStringExtra("url");
+        imgUrl = activity.getIntent().getStringExtra("img");
+    }
+
+    public void loadMore() {
+        pageNo++;
+        getData(pageNo, false);
+    }
+
+    public void getData(int pageNo, boolean isRefresh) {
+        this.pageNo = pageNo;
+        if (type == 3) {
+            //专题学习
+            ApiWrapper.getInstance().specialDetails(pageNo, id)
+                    .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                    .subscribe(new NetworkSubscriber<RxSpecialDetial>() {
+                        @Override
+                        public void onFail(RetrofitUtil.APIException e) {
+                            super.onFail(e);
+                            commentAdapter.loadMoreEnd();
+                            activity.refreshFail();
+                        }
+
+                        @Override
+                        public void onSuccess(RxSpecialDetial data) {
+                            activity.refreshOK();
+                            commentCount = data.getDetail().getCommentSum();
+                            title = data.getDetail().getTitle();
+                            content = data.getDetail().getContent();
+                            ((HeadWebActivity) activity).updateCollect(data.getDetail().getCollect() != 0);
+                            ((HeadWebActivity) activity).updateCount(data.getDetail().getCommentSum());
+                            if (Config.isLoadMore) {
+                                commentAdapter.setPagingData(data.getComment(), pageNo);
+                            } else {
+
+                                commentAdapter.setNewData(data.getComment());
+                            }
+                        }
+                    });
+
+
+        } else if (type == 4) {
+            //理论在线
+            ApiWrapper.getInstance().theoryDetails(pageNo, id)
+                    .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                    .subscribe(new NetworkSubscriber<RxSpecialDetial>() {
+                        @Override
+                        public void onFail(RetrofitUtil.APIException e) {
+                            super.onFail(e);
+                            commentAdapter.loadMoreEnd();
+                            activity.refreshFail();
+                        }
+
+                        @Override
+                        public void onSuccess(RxSpecialDetial data) {
+                            activity.refreshOK();
+                            title = data.getDetail().getTitle();
+                            content = data.getDetail().getContent();
+                            commentCount = data.getDetail().getCommentSum();
+                            ((HeadWebActivity) activity).updateCollect(data.getDetail().getCollect() != 0);
+                            ((HeadWebActivity) activity).updateCount(data.getDetail().getCommentSum());
+                            if (Config.isLoadMore) {
+                                commentAdapter.setPagingData(data.getComment(), pageNo);
+                            } else {
+                                commentAdapter.setNewData(data.getComment());
+                            }
+                        }
+                    });
+        } else {
+            ApiWrapper.getInstance().fcNoticeDetails(pageNo, id)
+                    .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                    .subscribe(new NetworkSubscriber<RxActivityDetial>() {
+                        @Override
+                        public void onFail(RetrofitUtil.APIException e) {
+                            super.onFail(e);
+                            commentAdapter.loadMoreFail();
+                            activity.refreshFail();
+                        }
+
+                        @Override
+                        public void onSuccess(RxActivityDetial data) {
+                            activity.refreshOK();
+                            title = data.getDetials().getTitle();
+                            content = data.getDetials().getContent();
+                            commentCount = data.getCount();
+                            ((HeadWebActivity) activity).updateCollect(data.getDetials().getCollect() != 0);
+                            ((HeadWebActivity) activity).updateCount(data.getCount());
+                            if (addCommentCount > 0) {
+                                List<RxComment> comments = commentAdapter.getData();
+                                for (int i = 0; i < addCommentCount; i++) {
+                                    comments.remove(comments.size() - 1);
+                                }
+                                commentAdapter.notifyDataSetChanged();
+                                addCommentCount = 0;
+                            }
+                            if (Config.isLoadMore) {
+                                commentAdapter.setPagingData(data.getPl(), pageNo);
+                            } else {
+                                commentAdapter.setNewData(data.getPl());
+                            }
+                        }
+                    });
+        }
+    }
+
+
+    public void comment(String content) {
+        if (TextUtils.isEmpty(content)) {
+            ToastUtil.toast("请输入评论内容");
+            return;
+        }
+        isDealing = true;
+        ApiWrapper.getInstance().comment(content, id)
+                .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                .doOnTerminate(() -> isDealing = false)
+                .subscribe(new NetworkSubscriber<HttpResult>() {
+                    @Override
+                    public void onFail(RetrofitUtil.APIException e) {
+                        super.onFail(e);
+                    }
+
+                    @Override
+                    public void onSuccess(HttpResult data) {
+                        getData(pageNo + 1, false);
+                        EventBus.getDefault().post(new RxAddScore(CacheKey.COMMENT, 0, id));
+                    }
+                });
+    }
+
+    public void commentLike(String id) {
+        isDealing = true;
+        ApiWrapper.getInstance().videoLike(id)
+                .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                .doOnTerminate(() -> isDealing = false)
+                .subscribe(new NetworkSubscriber<HttpResult>() {
+                    @Override
+                    public void onFail(RetrofitUtil.APIException e) {
+                        super.onFail(e);
+                    }
+
+                    @Override
+                    public void onSuccess(HttpResult data) {
+                        if (type == 3 || type == 4) {
+                            commentAdapter.getData().get(commentPos).setIszan(1);
+                            commentAdapter.getData().get(commentPos).setThumbs(commentAdapter.getData().get(commentPos).getThumbs() + 1);
+                        } else {
+                            commentAdapter.getData().get(commentPos).setIsDz(1);
+                            commentAdapter.getData().get(commentPos).setDz(commentAdapter.getData().get(commentPos).getDz() + 1);
+                        }
+
+                        commentAdapter.notifyItemChanged(commentPos + 1);
+
+                    }
+                });
+    }
+
+
+    private void cancelLike(String id) {
+        isDealing = true;
+        ApiWrapper.getInstance().removeVideoLike(id)
+                .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                .doOnTerminate(() -> isDealing = false)
+                .subscribe(new NetworkSubscriber<HttpResult>() {
+                    @Override
+                    public void onFail(RetrofitUtil.APIException e) {
+                        super.onFail(e);
+                    }
+
+                    @Override
+                    public void onSuccess(HttpResult data) {
+                        //取消点赞成功
+                        if (type == 3 || type == 4) {
+                            commentAdapter.getData().get(commentPos).setIszan(0);
+                            commentAdapter.getData().get(commentPos).setThumbs(commentAdapter.getData().get(commentPos).getThumbs() - 1);
+                        } else {
+                            commentAdapter.getData().get(commentPos).setIsDz(0);
+                            commentAdapter.getData().get(commentPos).setDz(commentAdapter.getData().get(commentPos).getDz() - 1);
+                        }
+
+                        commentAdapter.notifyItemChanged(commentPos + 1);
+                    }
+                });
+    }
+
+    /**
+     * 收藏
+     */
+    public void prase() {
+        ApiWrapper.getInstance().collectSave(id, type)
+                .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new NetworkSubscriber<HttpResult>() {
+                    @Override
+                    public void onFail(RetrofitUtil.APIException e) {
+                        super.onFail(e);
+                    }
+
+                    @Override
+                    public void onSuccess(HttpResult data) {
+                        ((HeadWebActivity) activity).updateCollect(true);
+                    }
+                });
+    }
+
+    public void cancelPrase() {
+        ApiWrapper.getInstance().collectAbolish(id, type)
+                .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new NetworkSubscriber<HttpResult>() {
+                    @Override
+                    public void onSuccess(HttpResult data) {
+                        ((HeadWebActivity) activity).updateCollect(false);
+                    }
+                });
+    }
+
+
+    public RecyclerView.OnItemTouchListener onItemTouchListener() {
+        return new OnItemClickListener() {
+            @Override
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+            }
+
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                super.onItemChildClick(adapter, view, position);
+                commentPos = position;
+                String id = "";
+                if (type == 3 || type == 4) {
+                    id = commentAdapter.getData().get(position).getComment_id();
+                } else {
+                    id = commentAdapter.getData().get(position).getContentId();
+                }
+                super.onItemChildClick(adapter, view, position);
+                switch (view.getId()) {
+                    case R.id.iv_praise:
+                        cancelLike(id);
+                        break;
+                    case R.id.iv_unpraise:
+                        commentLike(id);
+                        break;
+                }
+            }
+        };
+    }
+
+    public void share() {
+        ShareInfo shareInfo = new ShareInfo("", title, Config.IMAGE_HOST+imgUrl, url + id, "智慧党建-党员在线学习平台\n");
+        if (shareDialog == null) {
+            shareDialog = new ShareBottomDialog(activity, shareInfo);
+        } else {
+            shareDialog.setShareInfo(shareInfo);
+        }
+        shareDialog.show();
+    }
+
+    @Override
+    public void destroy() {
+        EventBus.getDefault().post(new RxAddScore(CacheKey.READ, (int) (System.currentTimeMillis() - startTime), id));
+    }
+}

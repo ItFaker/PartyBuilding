@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.qiantang.partybuilding.utils.AppUtil" />
+
+        <import type="com.qiantang.partybuilding.R" />
+
+        <import type="com.qiantang.partybuilding.utils.StringUtil" />
+
+        <variable
+            name="viewModel"
+            type="com.qiantang.partybuilding.module.assistant.viewmodel.ActivityDetialViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/ll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_common" />
+
+        <com.qiantang.partybuilding.widget.CusPtrFrameLayout
+            android:id="@+id/cptr"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/toolbar" />
+        </com.qiantang.partybuilding.widget.CusPtrFrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="98px"
+            android:visibility="@{(viewModel.status &lt; 3 &amp;&amp; viewModel.isInit)?View.GONE:View.VISIBLE}">
+
+            <com.qiantang.partybuilding.widget.commentwidget.CommentBox
+                android:id="@+id/input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="98px"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:visibility="@{(!viewModel.isInput &amp;&amp; viewModel.status ==3)?View.VISIBLE:View.GONE}">
+
+                <LinearLayout
+                    android:id="@+id/ll_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/input_layout_box"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="36px"
+                        android:layout_height="36px"
+                        android:background="@mipmap/icon_detial_comment" />
+
+                    <TextView
+                        style="@style/red30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="19px"
+                        android:text="评论" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_join"
+                    style="@style/white30"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@{(viewModel.status==3 &amp;&amp; !viewModel.isApply)?AppUtil.getColor(R.color.paleRed):AppUtil.getColor(R.color.none_text)}"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="@{(viewModel.status==3 &amp;&amp; !viewModel.isApply)?StringUtil.getString(R.string.is_activity_apply):StringUtil.getString(R.string.not_activity_apply)}" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </LinearLayout>
+</layout>

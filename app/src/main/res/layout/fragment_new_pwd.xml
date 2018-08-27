@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.qiantang.partybuilding.module.mine.viewmodel.FragmentNewPwdViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <EditText
+            android:id="@+id/et_phone"
+            style="@style/black24"
+            android:layout_width="match_parent"
+            android:layout_height="102px"
+            android:layout_marginLeft="29px"
+            android:background="@null"
+            android:gravity="left|center_vertical"
+            android:hint="请输入新密码"
+            android:inputType="textPassword"
+            android:text="@={viewModel.phone}" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_below="@+id/et_phone"
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            android:background="@color/line" />
+
+        <EditText
+            android:id="@+id/et_code"
+            style="@style/black24"
+            android:layout_width="300px"
+            android:layout_height="102px"
+            android:layout_below="@+id/line"
+            android:layout_marginLeft="29px"
+            android:background="@null"
+            android:hint="确认新密码"
+            android:inputType="textPassword"
+            android:text="@={viewModel.newPwd}" />
+
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_below="@+id/et_code"
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            android:background="@color/line" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            style="@style/white24"
+            android:layout_width="300px"
+            android:layout_height="70px"
+            android:layout_below="@+id/line1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="240px"
+            android:background="@drawable/btn_confirm"
+            android:onClick="@{viewModel.onClick}"
+            android:text="提交" />
+    </RelativeLayout>
+</layout>

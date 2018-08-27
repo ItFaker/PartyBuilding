@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">智慧党建通用版</string>
+    <string name="server_error">服务端错误</string>
+    <string name="net_error">网络错误</string>
+    <string name="net_timeout">网络连接超时</string>
+    <string name="http_error">http错误: %d</string>
+    <string name="version_ignore_tips">此版本更新不再提示，若需要可在“我的--设置--版本”选择更新。</string>
+    <string name="no_network">当前网络不可用</string>
+    <string name="none_loading">—————— 已经到底了 ——————</string>
+    <string name="rationale_camera">需要访问您的相机功能</string>
+    <string name="phoneNumberInvalid">请输入有效手机号码</string>
+    <string name="fragment_rank_more_dept">超出支部数</string>
+    <string name="fragment_rank_ge">个</string>
+    <string name="fragment_rank_total_study">总学习值</string>
+    <string name="fragment_rank_more_personal">超出个人数</string>
+    <string name="item_rank_join_text">人参与</string>
+    <string name="overtime">已逾期</string>
+    <string name="rationale_gps_and_audio">需要使用GPS功能和语音功能</string>
+    <string name="rationale_gps">需要使用GPS功能</string>
+    <string name="is_activity_apply">已报名</string>
+    <string name="not_activity_apply">报名</string>
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.qiantang.partybuilding.modle.RxStructureLevelTwo" />
+
+        <import type="com.qiantang.partybuilding.utils.StringUtil" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/ll_level_two"
+        android:layout_width="match_parent"
+        android:layout_height="120px">
+
+        <FrameLayout
+            android:id="@+id/fl_head"
+            android:layout_width="71px"
+            android:layout_height="71px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60px"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="70px"
+                android:layout_height="70px"
+                android:scaleType="fitCenter"
+                android:src="@drawable/red_point_structure" />
+
+            <TextView
+                android:id="@+id/tv_head"
+                style="@style/white36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@{StringUtil.getTitleHead(item.dept_name)}" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/black30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60px"
+            android:layout_toRightOf="@+id/fl_head"
+            android:text="@{item.dept_name}" />
+
+        <TextView
+            style="@style/gray22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10px"
+            android:layout_toLeftOf="@+id/iv_level_two" />
+
+        <ImageView
+            android:id="@+id/iv_level_two"
+            android:layout_width="60px"
+            android:layout_height="60px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="50px"
+            android:scaleType="centerInside"
+            android:src="@mipmap/icon_arrow_black_right" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            android:background="@color/line" />
+    </RelativeLayout>
+</layout>

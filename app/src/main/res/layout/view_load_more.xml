@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loading_view"
+    android:layout_width="match_parent"
+    android:layout_height="80px"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="50px"
+        android:layout_height="50px" />
+
+    <TextView
+        android:id="@+id/tv_loading"
+        style="@style/noneTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10px"
+        android:gravity="center"
+        android:text="加载更多数据中" />
+
+    <TextView
+        android:id="@+id/tv_load_fail"
+        style="@style/noneTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10px"
+        android:gravity="center"
+        android:text="数据加载失败"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_load_end"
+        style="@style/gray26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="没有更多了"
+        android:visibility="gone" />
+
+</LinearLayout>

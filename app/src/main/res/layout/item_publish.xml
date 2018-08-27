@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.qiantang.partybuilding.R" />
+
+        <import type="android.view.View" />
+
+        <import type="com.qiantang.partybuilding.utils.DraweeViewUtils" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="item"
+            type="cn.finalteam.galleryfinal.model.PhotoInfo" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <FrameLayout
+            android:id="@+id/publish_item"
+            android:layout_width="190px"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/sideMarginTop"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdv"
+                android:layout_width="170px"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15px"
+                android:layout_marginTop="15px"
+                app:viewAspectRatio="1" />
+
+            <ImageView
+                android:id="@+id/sdv_item_pic"
+                android:layout_width="170px"
+                android:layout_height="170px"
+                android:layout_marginRight="15px"
+                android:layout_marginTop="15px"
+                android:background="@color/line"
+                android:scaleType="centerInside"
+                android:src="@mipmap/add_pic"
+                android:visibility="@{TextUtils.isEmpty(item.photoPath)?View.VISIBLE:View.GONE}" />
+
+            <ImageView
+                android:id="@+id/publish_item_lose"
+                android:layout_width="45px"
+                android:layout_height="45px"
+                android:layout_gravity="right|top"
+                android:src="@mipmap/icon_study_close"
+                android:visibility="@{item.photoId==0?View.INVISIBLE:View.VISIBLE}" />
+
+        </FrameLayout>
+    </LinearLayout>
+</layout>

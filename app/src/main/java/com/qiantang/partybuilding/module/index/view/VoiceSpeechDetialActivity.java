@@ -1,0 +1,227 @@
+package com.qiantang.partybuilding.module.index.view;
+
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.SeekBar;
+
+import com.qiantang.partybuilding.BaseBindActivity;
+import com.qiantang.partybuilding.MyApplication;
+import com.qiantang.partybuilding.R;
+import com.qiantang.partybuilding.adapter.CommentAdapter;
+import com.qiantang.partybuilding.config.Config;
+import com.qiantang.partybuilding.databinding.ActivityVoiceSpeechDetialBinding;
+import com.qiantang.partybuilding.databinding.ViewVoiceSpeechHeadBinding;
+import com.qiantang.partybuilding.module.index.popwindow.SpeechPop;
+import com.qiantang.partybuilding.module.index.viewmodel.VoiceSpeechDetialViewMdoel;
+import com.qiantang.partybuilding.module.input.viewmodel.InputViewModel;
+import com.qiantang.partybuilding.utils.ActivityUtil;
+import com.qiantang.partybuilding.utils.AutoUtils;
+import com.qiantang.partybuilding.utils.Player;
+import com.qiantang.partybuilding.utils.RecycleViewUtils;
+import com.qiantang.partybuilding.utils.SharedPreferences;
+import com.qiantang.partybuilding.widget.commentwidget.KeyboardControlMnanager;
+
+/**
+ * Created by zhaoyong bai on 2018/5/25.
+ */
+public class VoiceSpeechDetialActivity extends BaseBindActivity implements CompoundButton.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, Player.TimeChangerListener {
+    private ActivityVoiceSpeechDetialBinding binding;
+    private ViewVoiceSpeechHeadBinding headBinding;
+    private VoiceSpeechDetialViewMdoel viewMdoel;
+    private CommentAdapter adapter;
+    private InputViewModel inputViewModel;
+    private Player player;
+    private SpeechPop speechPop;
+
+    @Override
+    protected void initBind() {
+        adapter = new CommentAdapter(R.layout.item_comment);
+        viewMdoel = new VoiceSpeechDetialViewMdoel(this, adapter);
+        inputViewModel = new InputViewModel(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_voice_speech_detial);
+        binding.input.setViewModel(inputViewModel);
+        binding.setViewModel(viewMdoel);
+        headBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.view_voice_speech_head, null, false);
+        headBinding.setViewModel(viewMdoel);
+    }
+
+    @Override
+    public void initView() {
+        speechPop = new SpeechPop(this);
+        player = new Player(headBinding.seekbar);
+        player.setTimeChangerListener(this);
+        headBinding.seekbar.setOnSeekBarChangeListener(this);
+        headBinding.chbPlay.setOnCheckedChangeListener(this);
+        binding.toolbar.setTitle("系列讲话");
+        inputViewModel.setHint("发表学习感悟...");
+        viewMdoel.initData();
+        initRv(binding.rv);
+        viewMdoel.testData(1, false);
+        initRefresh(binding.cptr);
+        inputViewModel.setShareVis(false);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+    }
+
+    @Override
+    public void refreshData() {
+        super.refreshData();
+        viewMdoel.testData(1, true);
+    }
+
+    private void initRv(RecyclerView rv) {
+        AutoUtils.auto(headBinding.getRoot());
+        adapter.addHeaderView(headBinding.getRoot());
+        adapter.setEnableLoadMore(Config.isLoadMore);
+        adapter.setLoadMoreView(RecycleViewUtils.getLoadMoreView());
+        if (Config.isLoadMore) {
+            adapter.setOnLoadMoreListener(() -> viewMdoel.loadMore(), rv);
+        }
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(adapter);
+        rv.addOnItemTouchListener(viewMdoel.onItemTouchListener());
+        initKeyboardHeightObserver();
+    }
+
+    private void initKeyboardHeightObserver() {
+        //观察键盘弹出与消退
+        KeyboardControlMnanager.observerKeyboardVisibleChange(this, new KeyboardControlMnanager.OnKeyboardStateChangeListener() {
+            View anchorView;
+
+            @Override
+            public void onKeyboardChange(int keyboardHeight, boolean isVisible) {
+                if (isVisible) { //键盘弹出
+                    inputViewModel.setIsPop(true);
+                } else { //键盘收起的时候判断是否有文字输入,如果有则继续展示发送按钮
+                    if (TextUtils.isEmpty(inputViewModel.getTextString())) {
+                        inputViewModel.setIsPop(false);
+                    } else {
+                        inputViewModel.setIsPop(true);
+                    }
+                }
+            }
+        });
+    }
+
+    public void startVideo(String url) {
+        player.playUrl(url);
+        viewMdoel.setTotalTime(player.mediaPlayer.getDuration());
+    }
+
+    public void setPopInfo(String title, String content) {
+        if (speechPop != null) {
+            speechPop.setTitle(title);
+            speechPop.setContent(content);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_back:
+                onBackPressed();
+                break;
+            case R.id.tv_send:
+                if (!MyApplication.isLogin()){
+                    ActivityUtil.startLoginActivity(this);
+                    return;
+                }
+                viewMdoel.comment(inputViewModel.getTextString());
+                inputViewModel.setTextString("");
+                closeInput();
+                break;
+            case R.id.iv_share:
+
+                break;
+            case R.id.iv_collect:
+                viewMdoel.cancelPrase();
+                break;
+            case R.id.iv_uncollect:
+                viewMdoel.prase();
+                break;
+            case R.id.ll_info:
+                speechPop.showAtLocation(Gravity.BOTTOM, 0, 0);
+                break;
+        }
+    }
+
+    public void updateCollect(boolean isCollect) {
+        inputViewModel.setIsCollect(isCollect);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        player.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (player!=null){
+//            player.play();
+//        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences.getInstance().remove("isPlaying");
+    }
+
+
+    @Override
+    protected void viewModelDestroy() {
+        player.stop();
+        viewMdoel.destroy();
+        inputViewModel.destroy();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        SharedPreferences.getInstance().putBoolean("isPlaying",b);
+        if (b) {
+            player.pause();
+        } else {
+            player.play();
+        }
+    }
+
+
+    private int progress;
+    private boolean isTracking = false;
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        this.progress = i * player.mediaPlayer.getDuration() / seekBar.getMax();
+        if (isTracking) {
+            viewMdoel.setPlayTime(progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        isTracking = true;
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        isTracking = false;
+        player.mediaPlayer.seekTo(progress);
+    }
+
+    @Override
+    public void onTimeChange(long time) {
+        viewMdoel.setPlayTime(time);
+    }
+}
