@@ -52,7 +52,7 @@ public class ParagonViewModel implements ViewModel {
 
     public void getData(int pageNo) {
         this.pageNo = pageNo;
-        ApiWrapper.getInstance().paragonList(pageNo)
+        ApiWrapper.getInstance().paragonList(pageNo,"")
                 .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<List<RxIndexCommon>>() {
                     @Override

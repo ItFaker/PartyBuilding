@@ -3,7 +3,12 @@ package com.qiantang.partybuilding.utils;
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.qiantang.partybuilding.MyApplication;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SharedPreferences {
@@ -142,6 +147,62 @@ public class SharedPreferences {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 保存List
+     * @param tag
+     * @param datalist
+     */
+    public <T> void setDataList(String tag, List<T> datalist) {
+        android.content.SharedPreferences sp = getSp();
+        if (null == datalist || datalist.size() <= 0){
+            try {
+                if (sp != null) {
+                    Editor e = sp.edit();
+                    e.putString(tag, "");
+                    e.commit();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        Gson gson = new Gson();
+        //转换成json数据，再保存
+        String strJson = gson.toJson(datalist);
+        try {
+            if (sp != null) {
+                Editor e = sp.edit();
+                e.putString(tag, strJson);
+                e.commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取List
+     * @param tag
+     * @return
+     */
+    public <T> List<T> getDataList(String tag,String def) {
+        List<T> datalist=new ArrayList<T>();
+
+        try {
+            android.content.SharedPreferences sp = getSp();
+            if (sp != null)
+                def = sp.getString(tag, def);
+            Gson gson = new Gson();
+            datalist = gson.fromJson(def, new TypeToken<List<T>>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datalist;
+
     }
 
 }

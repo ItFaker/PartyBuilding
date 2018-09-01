@@ -66,8 +66,8 @@ public class SampleApplication extends Application {
 //        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Config.UPUSH_SECRET);
         UMConfigure.setLogEnabled(true);
         UMConfigure.setEncryptEnabled(true);
-        UMConfigure.init(this, "5b077233f43e481af30000ae", "party", UMConfigure.DEVICE_TYPE_PHONE,
-                "ad77ceb416bdacca751d5909c1c4e361");
+        UMConfigure.init(this, "5b87522d8f4a9d146c0000ac", "party", UMConfigure.DEVICE_TYPE_PHONE,
+                "12cae6c4f6e843d1b241f899da40bdbd");
         initUpush();
     }
 
@@ -94,7 +94,7 @@ public class SampleApplication extends Application {
 
         mPushAgent.setPushIntentServiceClass(UmengNotificationService.class);
 
-        MiPushRegistar.register(this, "2882303761517834569", "5911783494569");
+        MiPushRegistar.register(this, "2882303761517856878", "5401785622878");
         HuaWeiRegister.register(this);
     }
 

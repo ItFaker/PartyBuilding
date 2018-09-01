@@ -1,6 +1,7 @@
 package com.qiantang.partybuilding.module.index.viewmodel;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -10,7 +11,6 @@ import com.qiantang.partybuilding.BaseBindFragment;
 import com.qiantang.partybuilding.R;
 import com.qiantang.partybuilding.base.ViewModel;
 import com.qiantang.partybuilding.modle.RxVideoStudy;
-import com.qiantang.partybuilding.module.index.adapter.IndexCommonAdapter;
 import com.qiantang.partybuilding.module.index.adapter.VideoStudyAdapter;
 import com.qiantang.partybuilding.module.mine.adapter.VideoStudyFragmentAdapter;
 import com.qiantang.partybuilding.network.NetworkSubscriber;
@@ -20,39 +20,42 @@ import com.qiantang.partybuilding.utils.ActivityUtil;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 /**
- * Created by zhaoyong bai on 2018/5/22.
+ * Author:    Jintf
+ * Date:      2018/8/31 0031 下午 5:35
  */
-public class VideoStudyViewModel implements ViewModel {
-    private BaseBindActivity activity;
+public class VideoStudySearchViewModel implements ViewModel {
     private VideoStudyAdapter adapter;
     private BaseBindFragment fragment;
     private VideoStudyFragmentAdapter fragmentAdapter;
     private int pageNo = 1;
+    private String keyword;
 
-    public VideoStudyViewModel(BaseBindActivity activity, VideoStudyAdapter adapter) {
-        this.activity = activity;
-        this.adapter = adapter;
-    }
 
-    public VideoStudyViewModel(BaseBindFragment activity, VideoStudyFragmentAdapter adapter) {
+    public VideoStudySearchViewModel(BaseBindFragment activity) {
         this.fragment = activity;
-        this.fragmentAdapter = adapter;
-        this.activity = (BaseBindActivity) fragment.getActivity();
+        EventBus.getDefault().register(this);
     }
 
+    public void setAdapter(VideoStudyAdapter adapter){
+        this.adapter=adapter;
+    }
     public void onLoadMore() {
         pageNo++;
-        getData(pageNo);
+        getData(pageNo,keyword);
     }
 
-    public void getData(int pageNo) {
+    public void getData(int pageNo,String keyword) {
         this.pageNo = pageNo;
-        ApiWrapper.getInstance().videoList(pageNo,"")
-                .compose(fragment == null ? activity.bindUntilEvent(ActivityEvent.DESTROY) : fragment.bindUntilEvent(FragmentEvent.DESTROY))
+        this.keyword = keyword;
+        ApiWrapper.getInstance().videoList(pageNo,keyword)
+                .compose(fragment == null ? fragment.bindUntilEvent(FragmentEvent.DESTROY) : fragment.bindUntilEvent(FragmentEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<List<RxVideoStudy>>() {
                     @Override
                     public void onFail(RetrofitUtil.APIException e) {
@@ -62,19 +65,35 @@ public class VideoStudyViewModel implements ViewModel {
                             return;
                         }
                         adapter.loadMoreEnd();
-                        activity.refreshFail();
+                        fragment.refreshFail();
                     }
 
                     @Override
                     public void onSuccess(List<RxVideoStudy> data) {
-                        activity.refreshOK();
+                        fragment.refreshOK();
                         if (fragmentAdapter != null) {
                             fragmentAdapter.setPagingData(data, pageNo);
                             return;
                         }
                         adapter.setPagingData(data, pageNo);
                     }
-                });
+
+                               @Override
+                               public void onComplete() {
+                                   super.onComplete();
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   super.onError(e);
+                               }
+
+                               @Override
+                               public void onNext(List<RxVideoStudy> data) {
+                                   super.onNext(data);
+                               }
+                           }
+                );
     }
 
     public RecyclerView.OnItemTouchListener onItemTouchListener() {
@@ -83,7 +102,7 @@ public class VideoStudyViewModel implements ViewModel {
             public void onSimpleItemClick(BaseQuickAdapter adapterQ, View view, int position) {
                 if (fragmentAdapter != null) {
                     RxVideoStudy rxVideoStudy = fragmentAdapter.getData().get(position);
-                    ActivityUtil.startVideoDetialActivity(activity, rxVideoStudy.getVideourl(), rxVideoStudy.getTitle(), rxVideoStudy.getVideo_id());
+                    ActivityUtil.startVideoDetialActivity(fragment.getActivity(), rxVideoStudy.getVideourl(), rxVideoStudy.getTitle(), rxVideoStudy.getVideo_id());
                 }
             }
 
@@ -98,15 +117,23 @@ public class VideoStudyViewModel implements ViewModel {
                 }
                 switch (view.getId()) {
                     case R.id.rl_parent:
-                        ActivityUtil.startVideoDetialActivity(activity, rxVideoStudy.getVideourl(), rxVideoStudy.getTitle(), rxVideoStudy.getVideo_id());
+                        ActivityUtil.startVideoDetialActivity(fragment.getActivity(), rxVideoStudy.getVideourl(), rxVideoStudy.getTitle(), rxVideoStudy.getVideo_id());
                         break;
                 }
             }
         };
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String keyword) {
+        if (TextUtils.isEmpty(keyword)) {
+            return;
+        }
+        getData(1, keyword);
+    }
+
     @Override
     public void destroy() {
-
+        EventBus.getDefault().unregister(this);
     }
 }

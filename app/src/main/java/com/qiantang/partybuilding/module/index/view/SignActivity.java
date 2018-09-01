@@ -69,6 +69,7 @@ public class SignActivity extends BaseBindActivity implements EasyPermission.Per
 
         if (bdLocation == null) {
             ToastUtil.toast("获取位置失败,请打开定位重试");
+            return;
         } else {
            String descibe=bdLocation.getLocationDescribe();
 //            Log.e("LocType:",bdLocation.getLocType()+"");

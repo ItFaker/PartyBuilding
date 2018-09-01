@@ -5,14 +5,17 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.qiantang.partybuilding.BaseBindActivity;
 import com.qiantang.partybuilding.R;
+import com.qiantang.partybuilding.config.Event;
 import com.qiantang.partybuilding.databinding.ActivityVideoStudyBinding;
 import com.qiantang.partybuilding.module.index.adapter.IndexCommonAdapter;
 import com.qiantang.partybuilding.module.index.adapter.VideoStudyAdapter;
 import com.qiantang.partybuilding.module.index.viewmodel.VideoStudyViewModel;
+import com.qiantang.partybuilding.utils.ActivityUtil;
 import com.qiantang.partybuilding.utils.RecycleViewUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
@@ -94,14 +97,14 @@ public class VideoStudyActivity extends BaseBindActivity {
             }
         });
     }
-
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 onBackPressed();
                 break;
-            case R.id.tv_right:
-
+            case R.id.iv_right:
+                ActivityUtil.startSearchActivityVideo(this, Event.SEARCH_VIDEO_STUDY);
                 break;
         }
     }

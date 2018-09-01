@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.qiantang.partybuilding.BaseBindFragment;
 import com.qiantang.partybuilding.MyApplication;
 import com.qiantang.partybuilding.R;
+import com.qiantang.partybuilding.config.Event;
 import com.qiantang.partybuilding.databinding.FragmentIndexBinding;
 import com.qiantang.partybuilding.module.index.adapter.ClassAdapter;
 import com.qiantang.partybuilding.module.index.adapter.IndexSectionAdapter;
@@ -26,6 +27,10 @@ import com.qiantang.partybuilding.utils.ActivityUtil;
 import com.qiantang.partybuilding.widget.MyBanner;
 import com.qiantang.partybuilding.widget.SectionItemDecoration;
 import com.qiantang.partybuilding.widget.SpaceItemDecoration;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * 首页
@@ -43,6 +48,7 @@ public class IndexFragment extends BaseBindFragment {
 
     @Override
     public View initBinding(LayoutInflater inflater, ViewGroup container) {
+        EventBus.getDefault().register(this);
         newsAdapter = new NewsAdapter(null);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_index, container, false);
         viewModel = new IndexViewModel(this, newsAdapter);
@@ -71,12 +77,17 @@ public class IndexFragment extends BaseBindFragment {
         initRefresh(binding.cptr);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Integer i) {
+        if(i == Event.RELOAD || i ==Event.LOGOUT){
+            refreshData();
+        }
+    }
     @Override
     public void refreshData() {
         super.refreshData();
         viewModel.getData();
     }
-
     /**
      * 底部动态数据
      *

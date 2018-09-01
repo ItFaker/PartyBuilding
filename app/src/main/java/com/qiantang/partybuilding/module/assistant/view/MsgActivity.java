@@ -3,15 +3,19 @@ package com.qiantang.partybuilding.module.assistant.view;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.qiantang.partybuilding.BaseBindActivity;
 import com.qiantang.partybuilding.R;
+import com.qiantang.partybuilding.config.Event;
 import com.qiantang.partybuilding.databinding.ActivityRecycleviewBinding;
 import com.qiantang.partybuilding.module.assistant.adapter.MsgAdapter;
 import com.qiantang.partybuilding.module.assistant.viewmodel.MsgViewModel;
+import com.qiantang.partybuilding.utils.ActivityUtil;
 import com.qiantang.partybuilding.utils.RecycleViewUtils;
 
 /**
+ * 通知公告
  * Created by zhaoyong bai on 2018/6/8.
  */
 public class MsgActivity extends BaseBindActivity {
@@ -29,6 +33,7 @@ public class MsgActivity extends BaseBindActivity {
     @Override
     public void initView() {
         binding.toolbar.setTitle("通知公告");
+        binding.toolbar.setResId(R.mipmap.icon_search_black);
         initRv(binding.rv);
         viewModel.getData(1);
         initRefresh(binding.cptr);
@@ -47,6 +52,16 @@ public class MsgActivity extends BaseBindActivity {
         adapter.setLoadMoreView(RecycleViewUtils.getLoadMoreView());
         rv.addOnItemTouchListener(viewModel.onItemTouchListener());
         adapter.setOnLoadMoreListener(() -> viewModel.loadMore(), rv);
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        switch (view.getId()) {
+            case R.id.iv_right:
+                ActivityUtil.startSearchActivity(this, Event.SEARCH_MSG);
+                break;
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.qiantang.partybuilding.module.index.adapter.LearningViewPagerAdapter;
 import com.qiantang.partybuilding.module.index.fragment.FragmentLearn;
 import com.qiantang.partybuilding.module.index.fragment.FragmentOnline;
 import com.qiantang.partybuilding.module.index.view.LearningListActivity;
+import com.qiantang.partybuilding.module.index.view.OnlineListActivity;
 import com.qiantang.partybuilding.network.NetworkSubscriber;
 import com.qiantang.partybuilding.network.retrofit.ApiWrapper;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -24,6 +25,7 @@ public class OnlineListViewModel implements ViewModel {
     private BaseBindActivity activity;
     private LearningViewPagerAdapter viewPagerAdapter;
     private int classId;
+    private List<Integer> classifyIdList;
 
     public OnlineListViewModel(BaseBindActivity activity, LearningViewPagerAdapter viewPagerAdapter) {
         this.activity = activity;
@@ -33,6 +35,7 @@ public class OnlineListViewModel implements ViewModel {
 
     private void initData() {
         classId = activity.getIntent().getIntExtra("id", -1);
+        classifyIdList = new ArrayList<>();
     }
 
     @Override
@@ -48,10 +51,21 @@ public class OnlineListViewModel implements ViewModel {
                     public void onSuccess(List<RxLearningClass> data) {
                         if (data.size() > 0) {
                             viewPagerAdapter.setData(getFragments(data), data);
+                            for (int i = 0; i < data.size(); i++) {
+                                classifyIdList.add(i,data.get(i).getClassifyId());
+                                if (classId == data.get(i).getClassifyId()) {
+                                    ((OnlineListActivity) activity).setPagerPos(i);
+                                    break;
+                                }
+                            }
                         }
 
                     }
                 });
+    }
+
+    public List<Integer> getCurrentClassifyIdList(){
+        return classifyIdList;
     }
 
     private List<Fragment> getFragments(List<RxLearningClass> classList) {

@@ -8,6 +8,7 @@ import android.view.View;
 import com.qiantang.partybuilding.BaseBindActivity;
 import com.qiantang.partybuilding.R;
 import com.qiantang.partybuilding.config.Config;
+import com.qiantang.partybuilding.config.Event;
 import com.qiantang.partybuilding.databinding.ActivityRecycleviewBinding;
 import com.qiantang.partybuilding.module.assistant.adapter.ActivityAdapter;
 import com.qiantang.partybuilding.module.assistant.viewmodel.MienViewModel;
@@ -54,7 +55,7 @@ public class PartyActivity extends BaseBindActivity {
         super.onClick(view);
         switch (view.getId()) {
             case R.id.iv_right:
-                ActivityUtil.startSearchActivity(this, Config.PARTY_ACTIVITY);
+                ActivityUtil.startSearchActivity(this, Event.SEARCH_PARTY);
                 break;
         }
     }

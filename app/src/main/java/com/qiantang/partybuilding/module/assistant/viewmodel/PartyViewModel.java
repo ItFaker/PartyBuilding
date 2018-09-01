@@ -38,7 +38,7 @@ public class PartyViewModel implements ViewModel {
     }
 
     public void getData() {
-        ApiWrapper.getInstance().djActivity(pageNo)
+        ApiWrapper.getInstance().djActivity(pageNo,"")
                 .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<List<RxActivity>>() {
                     @Override

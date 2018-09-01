@@ -52,7 +52,7 @@ public class LearnFragmentViewModel implements ViewModel {
 
     public void getData(int pageNo) {
         this.pageNo=pageNo;
-        ApiWrapper.getInstance().special(pageNo, classId)
+        ApiWrapper.getInstance().special(pageNo, classId,"")
                 .compose(fragment.bindUntilEvent(FragmentEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<List<RxLearningList>>() {
                     @Override

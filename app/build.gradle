@@ -18,9 +18,9 @@ android {
 
     signingConfigs {
         config {
-            keyAlias 'partyBuilding'
+            keyAlias 'partybuilding'
             keyPassword '000000'
-            storeFile file('F:\\partybuilding\\partybuilding.jks')
+            storeFile file('F:\\PartyBuilding\\partybuilding.jks')
             storePassword '000000'
         }
     }

@@ -5,6 +5,7 @@ import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.qiantang.partybuilding.BaseBindActivity;

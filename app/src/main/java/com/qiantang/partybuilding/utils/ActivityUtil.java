@@ -433,7 +433,6 @@ public class ActivityUtil {
         activity.startActivity(intent);
     }
 
-
     /**
      * 考试评测
      *
@@ -920,6 +919,28 @@ public class ActivityUtil {
     public static void startSearchActivity(Activity activity, int type) {
         Intent intent = new Intent(activity, SearchActivity.class);
         intent.putExtra("type", type);
+        activity.startActivity(intent);
+    }
+    /**
+     * 视频学习跳转搜索页面
+     *
+     * @param activity
+     */
+    public static void startSearchActivityVideo(Activity activity, int type) {
+        Intent intent = new Intent(activity, SearchActivity.class);
+        intent.putExtra("type", type);
+        intent.putExtra("isVideo",1);
+        activity.startActivity(intent);
+    }
+    /**
+     * 专题学习跳转搜索页面
+     *
+     * @param activity
+     */
+    public static void startSearchActivityLearn(Activity activity, int type) {
+        Intent intent = new Intent(activity, SearchActivity.class);
+        intent.putExtra("type", type);
+//        intent.putExtra("classifyId",classifyId);
         activity.startActivity(intent);
     }
 

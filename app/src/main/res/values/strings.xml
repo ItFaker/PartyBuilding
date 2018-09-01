@@ -19,4 +19,6 @@
     <string name="rationale_gps">需要使用GPS功能</string>
     <string name="is_activity_apply">已报名</string>
     <string name="not_activity_apply">报名</string>
+    <string name="search_record">搜索记录</string>
+    <string name="delete_all">清除所有</string>
 </resources>

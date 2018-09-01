@@ -147,21 +147,36 @@ public interface ApiService {
     //消息列表
     @POST("app/partyBuild/tzNotice")
     Observable<HttpResult<List<RxMsg>>> tzNotice(@Field("pageNum") int page,
-                                                 @Field("userId") String userId);
+                                                 @Field("userId") String userId,
+                                                 @Field("searchValue") String searchValue);
 
     @FormUrlEncoded
     //党建风采
     @POST("app/partyBuild/fcNotice")
     Observable<HttpResult<List<RxIndexCommon>>> fcNotice(@Field("pageNum") int page,
-                                                         @Field("type") int type);
+                                                         @Field("type") int type,
+                                                         @Field("userId") String userId);
 
     @FormUrlEncoded
     //党建风采
     @POST("app/partyBuild/fcNotice")
     Observable<HttpResult<List<RxIndexCommon>>> fcNoticeSerach(@Field("pageNum") int page,
                                                                @Field("type") int type,
-                                                               @Field("search") String serach);
-
+                                                               @Field("searchValue") String serach,
+                                                               @Field("userId") String userId);
+    @FormUrlEncoded
+    //党建风采/会议纪要搜索
+    @POST("app/partyBuild/fcNotice")
+    Observable<HttpResult<List<RxIndexCommon>>> fcNoticeSerach1(@Field("pageNum") int page,
+                                                                @Field("type") int type,
+                                                                @Field("searchValue") String serach);
+    @FormUrlEncoded
+    //党建风采/会议纪要搜索
+    @POST("app/partyBuild/fcNotice")
+    Observable<HttpResult<List<RxIndexCommon>>> fcNoticeSerach2(@Field("pageNum") int page,
+                                                                @Field("type") int type,
+                                                                @Field("searchValue") String serach,
+                                                                @Field("userId") String userId);
     @FormUrlEncoded
     //党建活动详情
     @POST("app/partyBuild/djActivityDetails")
@@ -176,7 +191,8 @@ public interface ApiService {
     //党建活动
     @POST("app/partyBuild/djActivity")
     Observable<HttpResult<List<RxActivity>>> djActivity(@Field("pageNum") int page,
-                                                        @Field("userId") String userId);
+                                                        @Field("userId") String userId,
+                                                        @Field("searchValue") String searchValue);
 
     @FormUrlEncoded
     //我的党建活动
@@ -262,13 +278,20 @@ public interface ApiService {
                                                           @Field("userId") String userId);
 
     //反馈列表
+    @FormUrlEncoded
     @POST("app/home/ShowHomePage")
-    Observable<HttpResult<List<RxIndex>>> ShowHomePage();
+    Observable<HttpResult<List<RxIndex>>> ShowHomePage(@Field("userId") String userId);
 
     //视频学习列表
     @FormUrlEncoded
     @POST("app/video/list")
-    Observable<HttpResult<List<RxVideoStudy>>> videoList(@Field("pageNum") int page);
+    Observable<HttpResult<List<RxVideoStudy>>> videoList(@Field("pageNum") int page,@Field("count") String count);
+
+    //视频学习列表（登录状态）
+    @FormUrlEncoded
+    @POST("app/video/list")
+    Observable<HttpResult<List<RxVideoStudy>>> userVideoList(@Field("pageNum") int page,@Field("userId") String userId,
+                                                             @Field("count") String count);
 
     //视频学习收藏列表
     @FormUrlEncoded
@@ -333,6 +356,17 @@ public interface ApiService {
     @POST("app/speak/list")
     Observable<HttpResult<List<RxIndexSpeak>>> speakList(@Field("pageNum") int page);
 
+    //系列讲话列表（登录状态）
+    @FormUrlEncoded
+    @POST("app/speak/list")
+    Observable<HttpResult<List<RxIndexSpeak>>> userSpeakList(@Field("pageNum") int page,
+                                                            @Field("userId") String userId);
+    //系列讲话搜索列表
+    @FormUrlEncoded
+    @POST("app/speak/list")
+    Observable<HttpResult<List<RxIndexSpeak>>> speakListSearch(@Field("pageNum") int page,
+                                                               @Field("count") String count,
+                                                               @Field("userId") String userId);
     //系列讲话收藏
     @FormUrlEncoded
     @POST("app/speak/userList")
@@ -351,7 +385,8 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("app/content/theory")
     Observable<HttpResult<RxOnline>> theory(@Field("pageNum") int pageNum,
-                                            @Field("classifyId") int classifyId);
+                                            @Field("classifyId") int classifyId,
+                                            @Field("searchValue") String searchValue);
 
     //理论在线详情
     @FormUrlEncoded
@@ -382,7 +417,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("app/content/special")
     Observable<HttpResult<List<RxLearningList>>> special(@Field("pageNum") int pageNum,
-                                                         @Field("classifyId") int classifyId);
+                                                         @Field("classifyId") int classifyId,
+                                                         @Field("userId") String userId,
+                                                         @Field("count") String count);
+
 
     //专题学习列表 收藏
     @FormUrlEncoded
@@ -433,13 +471,15 @@ public interface ApiService {
     //先进典范
     @FormUrlEncoded
     @POST("app/content/paragon")
-    Observable<HttpResult<List<RxIndexCommon>>> paragonList(@Field("pageNum") int pageNum);
+    Observable<HttpResult<List<RxIndexCommon>>> paragonList(@Field("pageNum") int pageNum,
+                                                            @Field("userId") String userId,
+                                                            @Field("searchValue") String searchValue);
 
-    //先进典范
-    @FormUrlEncoded
-    @POST("app/content/userParagon")
-    Observable<HttpResult<List<RxIndexCommon>>> userParagon(@Field("pageNum") int pageNum,
-                                                            @Field("userId") String userId);
+//    //先进典范
+//    @FormUrlEncoded
+//    @POST("app/content/userParagon")
+//    Observable<HttpResult<List<RxIndexCommon>>> userParagon(@Field("pageNum") int pageNum,
+//                                                            @Field("userId") String userId);
 
     //先进典范详情
     @FormUrlEncoded
@@ -456,7 +496,14 @@ public interface ApiService {
     //好书推荐
     @FormUrlEncoded
     @POST("app/content/recommend")
-    Observable<HttpResult<List<RxBookRecommend>>> recommend(@Field("pageNum") int pageNum);
+    Observable<HttpResult<List<RxBookRecommend>>> recommend(@Field("pageNum") int pageNum,
+                                                            @Field("userId") String userId);
+    //好书推荐 搜索
+    @FormUrlEncoded
+    @POST("app/content/recommend")
+    Observable<HttpResult<List<RxBookRecommend>>> userRecommendSearch(@Field("pageNum") int pageNum,
+                                                                      @Field("count") String count,
+                                                                      @Field("userId") String userId);
 
     //好书推荐
     @FormUrlEncoded
@@ -490,7 +537,8 @@ public interface ApiService {
     //组织架构 第e二级
     @FormUrlEncoded
     @POST("app/user/dept2")
-    Observable<HttpResult<List<RxStructureLevelTwo>>> dept2(@Field("deptId") String deptId);
+    Observable<HttpResult<List<RxStructureLevelTwo>>> dept2(@Field("deptId") String deptId,
+                                                            @Field("userId") String userId);
 
     //组织架构 第三级
     @FormUrlEncoded

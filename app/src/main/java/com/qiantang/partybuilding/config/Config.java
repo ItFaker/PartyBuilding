@@ -37,7 +37,7 @@ public class Config {
     public static final boolean isLoadMore = false;
 
     public static String[] getAuthKey() {
-        return new String[]{"wxca76e4116add66d0", "ac6a549ff0fdb417c87f9beadf5e0139", "1106878507", "SDdISGXGrqQjW0qj", "ad77ceb416bdacca751d5909c1c4e361"};
+        return new String[]{"wxf7d36a995691f861", "b70f99834503a2c458725d87149ad215", "1107723393", "T9D5TNkFyCvABepZ", "ad77ceb416bdacca751d5909c1c4e361"};
     }
 
 
@@ -76,14 +76,14 @@ public class Config {
     static {
         switch (ENVIRONMENT) {
             case DEVELOP: //开发环境
-                SERVER_HOST = "http://192.168.1.27:8081/";
-                IMAGE_HOST = "http://zhdj.qtcem.cn/imgfile/";
+                SERVER_HOST = "http://192.168.1.103:8082/";
+                IMAGE_HOST = "http://zhdjty.qtcem.com/imgfile/";
                 LOG_LEVEL = LogLevel.FULL;
                 break;
             case ONLINE: //生产环境5
             default:
-                SERVER_HOST = "http://zhdj.qtcem.cn/";
-                IMAGE_HOST = "http://zhdj.qtcem.cn/imgfile/";
+                SERVER_HOST = "http://zhdjty.qtcem.com/";
+                IMAGE_HOST = "http://zhdjty.qtcem.com/imgfile/";
                 LOG_LEVEL = LogLevel.NONE;
                 break;
         }

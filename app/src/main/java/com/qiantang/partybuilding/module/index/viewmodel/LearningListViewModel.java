@@ -11,6 +11,7 @@ import com.qiantang.partybuilding.module.index.fragment.FragmentLearn;
 import com.qiantang.partybuilding.module.index.view.LearningListActivity;
 import com.qiantang.partybuilding.network.NetworkSubscriber;
 import com.qiantang.partybuilding.network.retrofit.ApiWrapper;
+import com.qiantang.partybuilding.utils.SharedPreferences;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class LearningListViewModel implements ViewModel {
     private BaseBindActivity activity;
     private LearningViewPagerAdapter viewPagerAdapter;
     private int classId;
+//    private List<Integer> classifyIdList;
 
     public LearningListViewModel(BaseBindActivity activity, LearningViewPagerAdapter viewPagerAdapter) {
         this.activity = activity;
@@ -32,6 +34,7 @@ public class LearningListViewModel implements ViewModel {
 
     private void initData() {
         classId = activity.getIntent().getIntExtra("id", -1);
+//        classifyIdList = new ArrayList<>();
     }
 
     @Override
@@ -47,19 +50,23 @@ public class LearningListViewModel implements ViewModel {
                     public void onSuccess(List<RxLearningClass> data) {
                         if (data.size() > 0) {
                             viewPagerAdapter.setData(getFragments(data), data);
-                            if (classId > 0) {
+//                            if (classId > 0) {
                                 for (int i = 0; i < data.size(); i++) {
+//                                    classifyIdList.add(i,data.get(i).getClassifyId());
                                     if (classId == data.get(i).getClassifyId()) {
                                         ((LearningListActivity) activity).setPagerPos(i);
                                         break;
                                     }
                                 }
-                            }
+//                            }
                         }
 
                     }
                 });
     }
+//    public List<Integer> getCurrentClassifyIdList(){
+//        return classifyIdList;
+//    }
 
     private List<Fragment> getFragments(List<RxLearningClass> classList) {
         List<Fragment> fragments = new ArrayList<>();

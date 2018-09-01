@@ -42,11 +42,12 @@ public class MsgViewModel implements ViewModel {
 
     public void getData(int pageNo) {
         this.pageNo = pageNo;
-        ApiWrapper.getInstance().tzNotice(pageNo)
+        ApiWrapper.getInstance().tzNotice(pageNo,"")
                 .compose(activity.bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<List<RxMsg>>() {
                     @Override
                     public void onSuccess(List<RxMsg> data) {
+                        activity.refreshOK();
                         adapter.setPagingData(data, pageNo);
                     }
                 });

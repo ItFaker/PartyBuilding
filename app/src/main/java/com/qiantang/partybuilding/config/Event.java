@@ -20,4 +20,13 @@ public interface Event {
     int SEARCH_MIEN=4;  //党建风采
     int SEARCH_STUDY_STATE=9; //学习动态
     int SEARCH_CHARACTER=5; //人物表彰
+
+    int SEARCH_SPEECH_STUDY = 10;//系列讲话
+    int SEARCH_VIDEO_STUDY = 11;//视频学习
+    int SEARCH_GOOD_BOOK = 12;//好书推荐
+    int SEARCH_LEARNING = 13;//专题学习
+    int SEARCH_ONLINE = 14;//理论在线
+    int SEARCH_PARAGON = 15;//先进典范
+    int SEARCH_PARTY = 16;//党建活动
+    int SEARCH_MSG = 17;//通知公告
 }

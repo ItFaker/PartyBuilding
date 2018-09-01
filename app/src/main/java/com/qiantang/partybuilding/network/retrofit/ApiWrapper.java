@@ -1,6 +1,8 @@
 package com.qiantang.partybuilding.network.retrofit;
 
 
+import android.text.TextUtils;
+
 import com.qiantang.partybuilding.MyApplication;
 import com.qiantang.partybuilding.config.CacheKey;
 import com.qiantang.partybuilding.config.Config;
@@ -254,8 +256,8 @@ public class ApiWrapper extends RetrofitUtil {
     /**
      * 党建助手首页
      */
-    public Observable<List<RxMsg>> tzNotice(int page) {
-        return getService().tzNotice(page, MyApplication.USER_ID).compose(this.applySchedulers());
+    public Observable<List<RxMsg>> tzNotice(int page,String searchValue) {
+        return getService().tzNotice(page, MyApplication.USER_ID,searchValue).compose(this.applySchedulers());
     }
 
     /**
@@ -264,16 +266,26 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxIndexCommon>> fcNotice(int page, int type) {
-        return getService().fcNotice(page, type).compose(this.applySchedulers());
+        return getService().fcNotice(page, type,MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
+    /**
+     * @param type 4党建风采/会议纪要 搜索
+     * @param page
+     * @return
+     */
+    public Observable<List<RxIndexCommon>> fcNoticeSearch(int page, int type, String search) {
+        if(TextUtils.isEmpty(MyApplication.USER_ID))
+            return getService().fcNoticeSerach1(page, type, search).compose(this.applySchedulers());
+        return getService().fcNoticeSerach2(page, type, search,MyApplication.USER_ID).compose(this.applySchedulers());
+    }
     /**
      * @param type 4党建风采 搜索
      * @param page
      * @return
      */
     public Observable<List<RxIndexCommon>> fcNotice(int page, int type, String search) {
-        return getService().fcNoticeSerach(page, type, search).compose(this.applySchedulers());
+        return getService().fcNoticeSerach(page, type, search,MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
 
@@ -283,8 +295,8 @@ public class ApiWrapper extends RetrofitUtil {
      * @param page
      * @return
      */
-    public Observable<List<RxActivity>> djActivity(int page) {
-        return getService().djActivity(page, MyApplication.USER_ID).compose(this.applySchedulers());
+    public Observable<List<RxActivity>> djActivity(int page,String searchValue) {
+        return getService().djActivity(page, MyApplication.USER_ID,searchValue).compose(this.applySchedulers());
     }
 
     /**
@@ -425,7 +437,7 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxIndex>> showHomePage() {
-        return getService().ShowHomePage().compose(this.applySchedulers());
+        return getService().ShowHomePage(MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
     /**
@@ -434,12 +446,14 @@ public class ApiWrapper extends RetrofitUtil {
      * @param pageNo
      * @return
      */
-    public Observable<List<RxVideoStudy>> videoList(int pageNo) {
-        return getService().videoList(pageNo).compose(this.applySchedulers());
+    public Observable<List<RxVideoStudy>> videoList(int pageNo,String count) {
+        if(!TextUtils.isEmpty(MyApplication.USER_ID))
+            return getService().userVideoList(pageNo,MyApplication.USER_ID,count).compose(this.applySchedulers());
+        return getService().videoList(pageNo,count).compose(this.applySchedulers());
     }
 
     /**
-     * 视频学习列表
+     * 视频学习收藏列表
      *
      * @param pageNo
      * @return
@@ -522,6 +536,8 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxIndexSpeak>> speechList(int pageNo) {
+        if(!TextUtils.isEmpty(MyApplication.USER_ID))
+            return getService().userSpeakList(pageNo,MyApplication.USER_ID).compose(this.applySchedulers());
         return getService().speakList(pageNo).compose(this.applySchedulers());
     }
 
@@ -535,6 +551,15 @@ public class ApiWrapper extends RetrofitUtil {
         return getService().speakUserList(pageNo, MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
+    /**
+     * 系列讲话 搜索列表
+     * @param pageNo
+     * @param count
+     * @return
+     */
+    public Observable<List<RxIndexSpeak>> speechListSearch(int pageNo,String count) {
+        return getService().speakListSearch(pageNo, count,MyApplication.USER_ID).compose(this.applySchedulers());
+    }
     /**
      * 系列讲话详情
      *
@@ -563,8 +588,8 @@ public class ApiWrapper extends RetrofitUtil {
      * @param id
      * @return
      */
-    public Observable<RxOnline> theory(int pageNo, int id) {
-        return getService().theory(pageNo, id).compose(this.applySchedulers());
+    public Observable<RxOnline> theory(int pageNo, int id,String searchValue) {
+        return getService().theory(pageNo, id,searchValue).compose(this.applySchedulers());
     }
 
     /**
@@ -605,8 +630,8 @@ public class ApiWrapper extends RetrofitUtil {
      * @param id
      * @return
      */
-    public Observable<List<RxLearningList>> special(int pageNo, int id) {
-        return getService().special(pageNo, id).compose(this.applySchedulers());
+    public Observable<List<RxLearningList>> special(int pageNo, int id,String count) {
+        return getService().special(pageNo, id,MyApplication.USER_ID,count).compose(this.applySchedulers());
     }
 
     /**
@@ -709,8 +734,8 @@ public class ApiWrapper extends RetrofitUtil {
      * @param pageNo
      * @return
      */
-    public Observable<List<RxIndexCommon>> paragonList(int pageNo) {
-        return getService().paragonList(pageNo).compose(this.applySchedulers());
+    public Observable<List<RxIndexCommon>> paragonList(int pageNo,String searchValue) {
+        return getService().paragonList(pageNo,MyApplication.USER_ID,searchValue).compose(this.applySchedulers());
     }
 
 
@@ -721,7 +746,7 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxIndexCommon>> userParagon(int pageNo) {
-        return getService().paragonList(pageNo).compose(this.applySchedulers());
+        return getService().paragonList(pageNo,MyApplication.USER_ID,"").compose(this.applySchedulers());
     }
 
     /**
@@ -743,9 +768,18 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxBookRecommend>> recommend(int pageNo) {
-        return getService().recommend(pageNo).compose(this.applySchedulers());
+        return getService().recommend(pageNo,MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
+    /**
+     * 好书推荐搜索
+     * @param pageNo
+     * @param count
+     * @return
+     */
+    public Observable<List<RxBookRecommend>> userRecommendSearch(int pageNo,String count) {
+        return getService().userRecommendSearch(pageNo, count,MyApplication.USER_ID).compose(this.applySchedulers());
+    }
     /**
      * 好书推荐
      *
@@ -802,7 +836,7 @@ public class ApiWrapper extends RetrofitUtil {
      * @return
      */
     public Observable<List<RxStructureLevelTwo>> dept2(String deptId) {
-        return getService().dept2(deptId).compose(this.applySchedulers());
+        return getService().dept2(deptId,MyApplication.USER_ID).compose(this.applySchedulers());
     }
 
     /**

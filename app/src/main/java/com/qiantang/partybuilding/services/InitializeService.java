@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -113,8 +114,8 @@ public class InitializeService extends IntentService {
 //        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Config.UPUSH_SECRET);
         UMConfigure.setLogEnabled(true);
         UMConfigure.setEncryptEnabled(true);
-        UMConfigure.init(this, "5b077233f43e481af30000ae", "party", UMConfigure.DEVICE_TYPE_PHONE,
-                "ad77ceb416bdacca751d5909c1c4e361");
+        UMConfigure.init(this, "5b87522d8f4a9d146c0000ac", "party", UMConfigure.DEVICE_TYPE_PHONE,
+                "12cae6c4f6e843d1b241f899da40bdbd");
         initUpush();
     }
 
@@ -192,7 +193,7 @@ public class InitializeService extends IntentService {
                             // 此apk包的版本名称
                             update.setVersionName(bean.getVersionId());
                             // 此apk包的更新内容
-                            update.setUpdateContent(bean.getVersionExplain());
+                            update.setUpdateContent(Html.fromHtml(bean.getVersionExplain()).toString());
                             // 此apk包是否为强制更新
 //                            update.setForced(false);
                             update.setForced(bean.getConUpdate() == 1);

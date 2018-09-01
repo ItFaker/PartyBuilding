@@ -56,13 +56,14 @@ public class OnlineFragmentViewModel implements ViewModel {
     }
 
     private void getData() {
-        ApiWrapper.getInstance().theory(pageNo, classId)
+        ApiWrapper.getInstance().theory(pageNo, classId,"")
                 .compose(fragment.bindUntilEvent(FragmentEvent.DESTROY))
                 .subscribe(new NetworkSubscriber<RxOnline>() {
                     @Override
                     public void onFail(RetrofitUtil.APIException e) {
                         super.onFail(e);
                         learnAdapter.loadMoreEnd();
+                        fragment.refreshFail();
                     }
 
                     @Override

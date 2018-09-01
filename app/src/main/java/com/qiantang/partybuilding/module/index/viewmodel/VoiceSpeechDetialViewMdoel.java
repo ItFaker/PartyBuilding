@@ -98,7 +98,7 @@ public class VoiceSpeechDetialViewMdoel extends BaseObservable implements ViewMo
                             if (!isreFresh) {
                                 SharedPreferences.getInstance().putBoolean("isPlaying",true);
                                 ((VoiceSpeechDetialActivity) activity).startVideo(data.getVideo().getSpeakurl());
-                                activity.startService(new Intent(activity, LockScreenService.class));
+//                                activity.startService(new Intent(activity, LockScreenService.class));
                             }
                         }
                         ((VoiceSpeechDetialActivity) activity).updateCollect(data.getVideo().getCollect() != 0);

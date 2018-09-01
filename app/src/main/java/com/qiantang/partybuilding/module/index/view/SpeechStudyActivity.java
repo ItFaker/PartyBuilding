@@ -9,6 +9,7 @@ import android.view.View;
 import com.qiantang.partybuilding.BaseBindActivity;
 import com.qiantang.partybuilding.R;
 import com.qiantang.partybuilding.config.Config;
+import com.qiantang.partybuilding.config.Event;
 import com.qiantang.partybuilding.databinding.ActivitySpeechStudyBinding;
 import com.qiantang.partybuilding.databinding.ActivityVideoStudyBinding;
 import com.qiantang.partybuilding.module.index.adapter.IndexCommonAdapter;
@@ -61,7 +62,7 @@ public class SpeechStudyActivity extends BaseBindActivity {
                 onBackPressed();
                 break;
             case R.id.iv_right:
-                ActivityUtil.startSearchActivity(this, Config.SPEECH_STUDY);
+                ActivityUtil.startSearchActivity(this, Event.SEARCH_SPEECH_STUDY);
                 break;
         }
     }

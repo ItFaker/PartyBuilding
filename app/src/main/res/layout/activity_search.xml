@@ -10,11 +10,44 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar_search" />
-
+        <LinearLayout
+            android:id="@+id/linear_record"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/toolbar">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/gray20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_record"
+                    android:padding="10dp"/>
+                <TextView
+                    style="@style/gray20"
+                    android:id="@+id/tv_delete_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_all"
+                    android:layout_alignParentRight="true"
+                    android:padding="10dp"
+                    android:onClick="onClick"
+                    />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
         <FrameLayout
             android:id="@+id/fl_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"></FrameLayout>
+            android:layout_below="@+id/toolbar">
+        </FrameLayout>
     </RelativeLayout>
 </layout>
